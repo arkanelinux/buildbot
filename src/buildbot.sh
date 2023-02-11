@@ -106,12 +106,6 @@ main () {
 	fi
 }
 
-# PKGBUILD files are valid bash files we can source like any
-# normal bash script
-read_pkgbuild () {
-	source $1
-}
-
 # Check for build errors and log
 error_check () {
 	if [[ ! $1 -eq 0 ]]; then
