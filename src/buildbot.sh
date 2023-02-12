@@ -7,9 +7,6 @@ work_dir=$(pwd)
 repo="https://github.com/archlinux/svntogit-packages.git"
 repo_dir="svntogit-packages"
 
-# Other config options
-index_file="pkg.index"
-
 main () {
 	update_pkgbuild
 	index_packages
@@ -134,7 +131,7 @@ index_packages () {
 	cd $work_dir
 
 	if [[ -f ./pkg.index ]]; then
-		mv $index_file pkg.index.old
+		mv pkg.index pkg.index.old
 	fi
 
 	for dir in $work_dir/$repo_dir/*; do
