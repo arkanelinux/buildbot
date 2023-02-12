@@ -149,7 +149,7 @@ index_packages () {
 					for package_dir in $sub_dir/*;
 					do
 						# Lets not build testing nor staging packages
-						if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && -d "$package_dir" ]]; then
+						if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && "$package_dir" != *i686* && -d "$package_dir" ]]; then
 							cd $dir/$package_dir
 
 							if [[ -e ./PKGBUILD ]]; then
