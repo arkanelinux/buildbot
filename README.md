@@ -10,7 +10,7 @@ We will have to set up the sudoers file to allow for this by adding the followin
 builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
-## Set the target repo
+### Set the target repo
 Change `repo` and `repo_dir` in `buildbot.sh`.
 
 ### (Optional) Set custom build settings
