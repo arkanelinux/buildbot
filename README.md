@@ -2,7 +2,7 @@
 The Arkane Buildbot is a script used to pull, index and build Arch Linux pkgbuild Git repos.
 
 ## Setup
-### Allow user to run pacman -S without sudo password
+### 1. Allow user to run pacman -S without sudo password
 The script is run as a normal non-privileged user, however it will require passwordless sudo access to run pacman when installing build dependencies.
 
 We will have to set up the sudoers file to allow for this by adding the following line.
@@ -10,10 +10,10 @@ We will have to set up the sudoers file to allow for this by adding the followin
 builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
-### Set the target repo
+### 2. Set the target repo
 Change `repo` and `repo_dir` in `buildbot.sh`.
 
-### (Optional) Set custom build settings
+### 3. (Optional) Set custom build settings
 Edit `/etc/makepkg.conf` with your custom build environment settings.
 
 For example, change the compiler flags;
