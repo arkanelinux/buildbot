@@ -7,7 +7,7 @@ The script is run as a normal non-privileged user, however it will require passw
 
 We will have to set up the sudoers file to allow for this by adding the following line.
 ```
-builduser		ALL=(root)		NOPASSWD: SETENV: /usr/bin/pacman
+builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
 ## Set the target repo
