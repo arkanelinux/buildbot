@@ -73,7 +73,7 @@ main () {
 								sudo pacman -S --noconfirm --needed "${makedepends} ${depends}"
 
 								# Build the package
-								makepkg
+								makepkg -d
 							fi
 						fi
 						(( looptwo=looptwo+1 ))
@@ -106,10 +106,10 @@ main () {
 
 				# Ensure dependencies are intalled
 				source ./PKGBUILD
-				sudo pacman -S --noconfirm --needed "${makedepends} ${depends}"
+				sudo pacman -S --noconfirm --needed "${makedepends}"
 
 				# Build the package
-				makepkg
+				makepkg -d
 			fi
 
 			if [[ "$go_run" == 1 ]]; then
