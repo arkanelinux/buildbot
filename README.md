@@ -35,4 +35,4 @@ MAKEFLAGS="-j16"
 ### Options and arguments
 | Argument | Description | Example |
 | --- | --- | --- |
-| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default paramter | `buildscript ./custom.conf` |
+| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default file instead. | `buildscript ./custom.conf` |
