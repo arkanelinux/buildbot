@@ -27,6 +27,12 @@ MAKEFLAGS="-j16"
 ```
 
 ## Usage
-Just run it with the builduser. `./buildscript.sh`
+### Running the program
+```
+./buildscript.sh [FILE]
+```
 
-I will add a systemd-service later.
+### Options and arguments
+| Argument | Description | Example |
+| --- | --- | --- |
+| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default paramter | `buildscript ./custom.conf` |
