@@ -70,7 +70,7 @@ main () {
 
 								# Ensure dependencies are intalled
 								source ./PKGBUILD
-								sudo pacman -S --noconfirm --needed "${makedepends} ${depends}"
+								sudo pacman -S --noconfirm --needed "${makedepends}"
 
 								# Build the package
 								makepkg -d
