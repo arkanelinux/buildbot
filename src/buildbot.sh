@@ -1,11 +1,27 @@
 #!/usr/bin/env bash
 
-# Systemd navigates to the working directory for us
-work_dir=$(pwd)
+# If $1 is set we will assume the user is overwriting the config from the command line.
+if [[ -v 1 && $1 != "-" ]]; then
+	source $1
 
-# Manually define the repo we wish to clone
-repo="https://github.com/archlinux/svntogit-packages.git"
-repo_dir="svntogit-packages"
+	if [[ ! $? -eq 0 ]]; then
+		printf "Failed to run custom config file '$1', quitting...\n"
+		exit 1
+	fi
+else
+	source /etc/buildbot.conf
+	
+	if [[ ! $? -eq 0 ]]; then
+		printf "Failed to run default config file '/etc/buildbot.sh', quitting...\n"
+		exit 1
+	fi
+fi
+
+# If work_dir is already defined we will assume it is purposefully being
+# overwritten by the user
+if [[ ! -v work_dir ]]; then
+	work_dir=$(pwd)
+fi
 
 main () {
 	update_pkgbuild
