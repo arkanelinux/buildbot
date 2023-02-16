@@ -16,6 +16,13 @@ else
 		exit 1
 	fi
 fi
+	
+# By default set index mode to long
+# TODO: Make it autodetect if undefined or empty
+if [[ ! -v index_mode || $index_mode == '' ]]; then
+	printf "Index mode is not defined, defaulting to 'long' mode\n"
+	index_mode='long'
+fi
 
 # If work_dir is already defined we will assume it is purposefully being
 # overwritten by the user
@@ -28,6 +35,8 @@ main () {
 	index_packages
 	
 	cd $work_dir
+
+	
 
 	# If pkg.index.old exists this is not the first run
 	# so we can start checking for updates
@@ -50,7 +59,6 @@ main () {
 				# If both app_version and app_directory are indexed look for this package in pkg.index.old
 				if [[ $go_run -eq 1 ]]; then
 					result=$(grep "^${app_directory}\s" ./pkg.index.old)
-
 
 					# Set var to error to assure package build if app_directory is missing from the pkg.index.old
 					# this will trigger when new packages are added to the repo
@@ -150,37 +158,55 @@ index_packages () {
 		mv pkg.index pkg.index.old
 	fi
 
-	for dir in $work_dir/$repo_dir/*; do
-		# dir = full filepath to package, eg. cowsay
-		# sub_dir = Typically repos and trunk
-		# package_dir = dir inside of repos, eg. community-x86_64
-		#
-		# sub_dir step could technically be removed and hard coded,
-		# but I am leaving it in for now
-		if [[ -d "$dir" ]]; then
-			cd $dir
+	if [[ $index_mode == 'long' ]]; then
+		for dir in $work_dir/$repo_dir/*; do
+			# dir = full filepath to package, eg. cowsay
+			# sub_dir = Typically repos and trunk
+			# package_dir = dir inside of repos, eg. community-x86_64
+			#
+			# sub_dir step could technically be removed and hard coded,
+			# but I am leaving it in for now
+			if [[ -d "$dir" ]]; then
+				cd $dir
 
-			for sub_dir in *; do
-				if [[ "$sub_dir" != 'trunk' ]]; then
-					for package_dir in $sub_dir/*;
-					do
-						# Lets not build testing nor staging packages
-						if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && "$package_dir" != *i686* && -d "$package_dir" ]]; then
-							cd $dir/$package_dir
+				for sub_dir in *; do
+					if [[ "$sub_dir" != 'trunk' ]]; then
+						for package_dir in $sub_dir/*;
+						do
+							# Lets not build testing nor staging packages
+							if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && "$package_dir" != *i686* && -d "$package_dir" ]]; then
+								cd $dir/$package_dir
 
-							if [[ -e ./PKGBUILD ]]; then
-								source ./PKGBUILD
-							else
-								printf "No PKGBUILD file for $dir/$package_dir\n"
+								if [[ -e ./PKGBUILD ]]; then
+									source ./PKGBUILD
+									echo "$dir/$package_dir $pkgver-$pkgrel" >> $work_dir/pkg.index
+								else
+									printf "No PKGBUILD file for $dir/$package_dir\n"
+								fi
 							fi
+						done
+					fi
+				done
+			fi
+		done
+	elif [[ $index_mode == 'short' ]]; then
+		# If short index_mode is selected
+		for dir in $work_dir/$repo_dir/*; do
+			if [[ -d "$dir" ]]; then
+				cd $dir
 
-							echo "$dir/$package_dir $pkgver-$pkgrel" >> $work_dir/pkg.index
-						fi
-					done
+				if [[ -e ./PKGBUILD ]]; then
+					source ./PKGBUILD
+					echo "$dir/$package_dir $pkgver-$pkgrel" >> $work_dir/pkg.index
+				else
+					printf "No PKGBUILD file for $dir/$package_dir\n"
 				fi
-			done
-		fi
-	done
+			fi
+		done
+	else
+		printf "No valid index_mode selected\n"
+		exit 1
+	fi
 }
 
 run_build () {
