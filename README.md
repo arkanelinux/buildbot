@@ -11,7 +11,7 @@ builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
 ### 2. Set the target repo
-Change `repo` and `repo_dir` in `buildbot.sh`.
+Change `repo` and `repo_dir` in `buildbot.conf`, by default located at `/etc/buildbot.conf`, alternatively also overwritable with `$1`.
 
 ### 3. (Optional) Set custom build settings
 Edit `/etc/makepkg.conf` with your custom build environment settings.
