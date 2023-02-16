@@ -36,8 +36,6 @@ main () {
 	
 	cd $work_dir
 
-	
-
 	# If pkg.index.old exists this is not the first run
 	# so we can start checking for updates
 	if [[ -f ./pkg.index.old ]]; then
