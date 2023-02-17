@@ -80,6 +80,7 @@ main () {
 
 								# Build the package
 								makepkg -d
+								error_check $?
 							fi
 						fi
 						(( looptwo=looptwo+1 ))
@@ -116,6 +117,7 @@ main () {
 
 				# Build the package
 				makepkg -d
+				error_check $?
 			fi
 
 			if [[ "$go_run" == 1 ]]; then
@@ -127,9 +129,11 @@ main () {
 
 # Check for build errors and log
 error_check () {
-	if [[ ! $1 -eq 0 ]]; then
-		echo "Building $pkgdir failed with exit code $1"
-		echo "$pkg $1" >> ./error.log
+	if [[ ! $? -eq 0 ]]; then
+		current_dir=${PWD##*/}
+
+		printf "Building $current_dir failed with exit code $1\n"
+		printf "$current_dir $1\n" >> $work_dir/error.log
 	fi
 }
 
