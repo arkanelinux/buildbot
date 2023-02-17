@@ -129,7 +129,7 @@ main () {
 
 # Check for build errors and log
 error_check () {
-	if [[ ! $? -eq 0 ]]; then
+	if [[ ! $1 -eq 0 ]]; then
 		current_dir=${PWD##*/}
 
 		printf "Building $current_dir failed with exit code $1\n"
