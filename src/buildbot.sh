@@ -71,7 +71,7 @@ main () {
 
 							if [[ "$old_app_version" != "$app_version" ]]; then
 								# If the app version does not match we will assume an update is available and rebuild
-								echo $app_directory
+								printf "$app_directory\n"
 								cd $app_directory
 
 								# Ensure dependencies are intalled
@@ -92,7 +92,7 @@ main () {
 	else
 		# If this is the first run we can assume we will have to build everything
 		# not the most elegant solution but it will do for now
-		echo "pkg.index.old does not exist, assuming first run"
+		printf "pkg.index.old does not exist, assuming first run\n"
 
 		while read i; do
 			cd $work_dir
@@ -108,7 +108,7 @@ main () {
 
 			if [[ "$go_run" -eq 1 ]]; then
 				# If the app version does not match we will assume an update is available and rebuild
-				echo $app_directory
+				printf "$app_directory\n"
 				cd $app_directory
 
 				# Ensure dependencies are intalled
@@ -181,7 +181,7 @@ index_packages () {
 
 								if [[ -e ./PKGBUILD ]]; then
 									source ./PKGBUILD
-									echo "$dir/$package_dir $pkgver-$pkgrel" >> $work_dir/pkg.index
+									printf "$dir/$package_dir $pkgver-$pkgrel\n" >> $work_dir/pkg.index
 								else
 									printf "No PKGBUILD file for $dir/$package_dir\n"
 								fi
@@ -199,7 +199,7 @@ index_packages () {
 
 				if [[ -e ./PKGBUILD ]]; then
 					source ./PKGBUILD
-					echo "$dir/$package_dir $pkgver-$pkgrel" >> $work_dir/pkg.index
+					printf "$dir/$package_dir $pkgver-$pkgrel\n" >> $work_dir/pkg.index
 				else
 					printf "No PKGBUILD file for $dir/$package_dir\n"
 				fi
@@ -208,14 +208,6 @@ index_packages () {
 	else
 		printf "No valid index_mode selected\n"
 		exit 1
-	fi
-}
-
-run_build () {
-	if [[ "$first_run" == 1 ]]; then
-		echo firstrun
-	else
-		echo not firstrun
 	fi
 }
 
