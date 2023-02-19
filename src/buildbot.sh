@@ -4,28 +4,28 @@ main () {
 	update_pkgbuild
 	index_packages
 	
+	# Import PGP keys from repo if any
+	import_pgp_keys () {
+		if [[ -d "$app_directory/keys" ]]; then
+			echo IMPORTING KEYS
+			gpg --import $app_directory/keys/pgp/*
+		fi
+	}
+
+	# Check for build errors and log
+	error_check () {
+		if [[ ! $1 -eq 0 ]]; then
+			printf "Building $current_dir failed with exit code $1\n"
+			printf "$app_directory $1\n" >> "$log_dir/buildbot.log"
+		fi
+	}
+
 	cd $work_dir
 
 	# If pkg.index.old exists this is not the first run
 	# so we can start checking for updates
 	if [[ -f ./pkg.index.old ]]; then
 
-		# Import PGP keys from repo if any
-		import_pgp_keys () {
-			if [[ -d "$app_directory/keys" ]]; then
-				echo IMPORTING KEYS
-				sleep 10
-				gpg --import $app_directory/keys/pgp/*
-			fi
-		}
-
-		# Check for build errors and log
-		error_check () {
-			if [[ ! $1 -eq 0 ]]; then
-				printf "Building $current_dir failed with exit code $1\n"
-				printf "$app_directory $1\n" >> "$log_dir/buildbot.log"
-			fi
-		}
 
 		# Get both app name and version
 		while read i; do
@@ -58,7 +58,7 @@ main () {
 
 							if [[ "$old_app_version" != "$app_version" ]]; then
 								# If the app version does not match we will assume an update is available and rebuild
-								printf "$app_directory\n"
+								printf "\e[32mNow building: $app_directory\e[0m\n"
 								cd $app_directory
 
 								# Ensure dependencies are installed
@@ -98,7 +98,7 @@ main () {
 
 			if [[ "$go_run" -eq 1 ]]; then
 				# If the app version does not match we will assume an update is available and rebuild
-				printf "$app_directory\n"
+				printf "\e[31mNow Building: $app_directory\e[0m\n"
 				cd $app_directory
 
 				# Ensure dependencies are installed
