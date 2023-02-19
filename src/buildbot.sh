@@ -164,9 +164,11 @@ index_packages () {
 				cd $dir
 
 				for sub_dir in *; do
+
 					if [[ "$sub_dir" != 'trunk' ]]; then
 						for package_dir in $sub_dir/*;
 						do
+
 							# Lets not build testing nor staging packages
 							if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && "$package_dir" != *i686* && -d "$package_dir" ]]; then
 								cd $dir/$package_dir
@@ -178,8 +180,10 @@ index_packages () {
 									printf "No PKGBUILD file for $dir/$package_dir\n"
 								fi
 							fi
+
 						done
 					fi
+
 				done
 			fi
 		done
@@ -195,6 +199,7 @@ index_packages () {
 				else
 					printf "No PKGBUILD file for $dir/$package_dir\n"
 				fi
+
 			fi
 		done
 	else
