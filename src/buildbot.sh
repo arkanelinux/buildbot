@@ -19,6 +19,14 @@ main () {
 			fi
 		}
 
+		# Check for build errors and log
+		error_check () {
+			if [[ ! $1 -eq 0 ]]; then
+				printf "Building $current_dir failed with exit code $1\n"
+				printf "$app_directory $1\n" >> "$log_dir/buildbot.log"
+			fi
+		}
+
 		# Get both app name and version
 		while read i; do
 				cd $work_dir
@@ -109,14 +117,6 @@ main () {
 				go_run=0
 			fi
 		done < ./pkg.index
-	fi
-}
-
-# Check for build errors and log
-error_check () {
-	if [[ ! $1 -eq 0 ]]; then
-		printf "Building $current_dir failed with exit code $1\n"
-		printf "$app_directory $1\n" >> "$log_dir/buildbot.log"
 	fi
 }
 
