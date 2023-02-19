@@ -10,6 +10,15 @@ main () {
 	# so we can start checking for updates
 	if [[ -f ./pkg.index.old ]]; then
 
+		# Import PGP keys from repo if any
+		import_pgp_keys () {
+			if [[ -d "$app_directory/keys" ]]; then
+				echo IMPORTING KEYS
+				sleep 10
+				gpg --import $app_directory/keys/pgp/*
+			fi
+		}
+
 		# Get both app name and version
 		while read i; do
 				cd $work_dir
@@ -44,9 +53,12 @@ main () {
 								printf "$app_directory\n"
 								cd $app_directory
 
-								# Ensure dependencies are intalled
+								# Ensure dependencies are installed
 								source ./PKGBUILD
-								sudo pacman -Sy --noconfirm --needed "${makedepends}"
+								sudo pacman -Sy --noconfirm --needed ${makedepends} ${depends}
+
+								# Import pgp keys if any
+								import_pgp_keys
 
 								# Build the package
 								makepkg -d
@@ -81,9 +93,12 @@ main () {
 				printf "$app_directory\n"
 				cd $app_directory
 
-				# Ensure dependencies are intalled
+				# Ensure dependencies are installed
 				source ./PKGBUILD
-				sudo pacman -Sy --noconfirm --needed "${makedepends}"
+				sudo pacman -Sy --noconfirm --needed ${makedepends} ${depends}
+
+				# Import pgp keys if any
+				import_pgp_keys
 
 				# Build the package
 				makepkg -d
