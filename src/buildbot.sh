@@ -1,50 +1,5 @@
 #!/usr/bin/env bash
 
-# If $1 is set we will assume the user is overwriting the config from the command line.
-if [[ -v 1 && $1 != "-" ]]; then
-	source $1
-
-	if [[ ! $? -eq 0 ]]; then
-		printf "\e[31mFailed to run custom config file '$1', quitting...\e[0m\n"
-		exit 1
-	fi
-else
-	source /etc/buildbot.conf
-	
-	if [[ ! $? -eq 0 ]]; then
-		printf "\e[31mFailed to run default config file '/etc/buildbot.sh', quitting...\e[0m\n"
-		exit 1
-	fi
-fi
-	
-# By default set index mode to long
-# TODO: Make it autodetect if undefined or empty
-if [[ ! -v index_mode || $index_mode == '' ]]; then
-	printf "\e[31mIndex mode is not defined, defaulting to 'long' mode\e[0m\n"
-	index_mode='long'
-fi
-
-# These variables are required to all be defined in the config file
-if [[ ! -v log_dir || ! -v repo || ! -v repo_dir ]]; then
-	printf "\e[31mNot all required variables have been configured in the config file, quitting...\e[0m\n"
-	exit 1
-fi
-
-# Ensure log folder exists
-mkdir -p $log_dir
-
-# Ensure log file is created properly
-if [[ ! -d $log_dir ]]; then
-	printf "\e[31mFailed to create '$log_dir', quitting...\e[0m\n"
-	exit 1
-fi
-
-# If work_dir is already defined we will assume it is purposefully being
-# overwritten by the user
-if [[ ! -v work_dir ]]; then
-	work_dir=$(pwd)
-fi
-
 main () {
 	update_pkgbuild
 	index_packages
@@ -234,5 +189,50 @@ index_packages () {
 		exit 1
 	fi
 }
+
+# If $1 is set we will assume the user is overwriting the config from the command line.
+if [[ -v 1 && $1 != "-" ]]; then
+	source $1
+
+	if [[ ! $? -eq 0 ]]; then
+		printf "\e[31mFailed to run custom config file '$1', quitting...\e[0m\n"
+		exit 1
+	fi
+else
+	source /etc/buildbot.conf
+	
+	if [[ ! $? -eq 0 ]]; then
+		printf "\e[31mFailed to run default config file '/etc/buildbot.sh', quitting...\e[0m\n"
+		exit 1
+	fi
+fi
+	
+# By default set index mode to long
+# TODO: Make it autodetect if undefined or empty
+if [[ ! -v index_mode || $index_mode == '' ]]; then
+	printf "\e[31mIndex mode is not defined, defaulting to 'long' mode\e[0m\n"
+	index_mode='long'
+fi
+
+# These variables are required to all be defined in the config file
+if [[ ! -v log_dir || ! -v repo || ! -v repo_dir ]]; then
+	printf "\e[31mNot all required variables have been configured in the config file, quitting...\e[0m\n"
+	exit 1
+fi
+
+# Ensure log folder exists
+mkdir -p $log_dir
+
+# Ensure log file is created properly
+if [[ ! -d $log_dir ]]; then
+	printf "\e[31mFailed to create '$log_dir', quitting...\e[0m\n"
+	exit 1
+fi
+
+# If work_dir is already defined we will assume it is purposefully being
+# overwritten by the user
+if [[ ! -v work_dir ]]; then
+	work_dir=$(pwd)
+fi
 
 main
