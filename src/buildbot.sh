@@ -5,14 +5,14 @@ if [[ -v 1 && $1 != "-" ]]; then
 	source $1
 
 	if [[ ! $? -eq 0 ]]; then
-		printf "Failed to run custom config file '$1', quitting...\n"
+		printf "\e[31mFailed to run custom config file '$1', quitting...\e[0m\n"
 		exit 1
 	fi
 else
 	source /etc/buildbot.conf
 	
 	if [[ ! $? -eq 0 ]]; then
-		printf "Failed to run default config file '/etc/buildbot.sh', quitting...\n"
+		printf "\e[31mFailed to run default config file '/etc/buildbot.sh', quitting...\e[0m\n"
 		exit 1
 	fi
 fi
@@ -20,8 +20,23 @@ fi
 # By default set index mode to long
 # TODO: Make it autodetect if undefined or empty
 if [[ ! -v index_mode || $index_mode == '' ]]; then
-	printf "Index mode is not defined, defaulting to 'long' mode\n"
+	printf "\e[31mIndex mode is not defined, defaulting to 'long' mode\e[0m\n"
 	index_mode='long'
+fi
+
+# These variables are required to all be defined in the config file
+if [[ ! -v log_dir || ! -v repo || ! -v repo_dir ]]; then
+	printf "\e[31mNot all required variables have been configured in the config file, quitting...\e[0m\n"
+	exit 1
+fi
+
+# Ensure log folder exists
+mkdir -p $log_dir
+
+# Ensure log file is created properly
+if [[ ! -d $log_dir ]]; then
+	printf "\e[31mFailed to create '$log_dir', quitting...\e[0m\n"
+	exit 1
 fi
 
 # If work_dir is already defined we will assume it is purposefully being
@@ -133,22 +148,31 @@ error_check () {
 		current_dir=${PWD##*/}
 
 		printf "Building $current_dir failed with exit code $1\n"
-		printf "$current_dir $1\n" >> $work_dir/error.log
+		printf "$current_dir $1\n" >> "${log_dir}/buildbot.log"
 	fi
 }
 
 # Pull the latest Arch pkgbuild repo
 update_pkgbuild () {
 	cd $work_dir
+
+	git_error_check () {
+		if [[ ! $1 -eq 0  ]]; then
+			printf "\e[31mFailed to git clone/pull '$repo' exited with '$1', quitting...\e[0m\n"
+			exit 1
+		fi
+	}
 	
 	# Check if repo exists
 	if [[ ! -d ./$repo_dir ]]; then
 		printf "Repo does not exist, cloning $repo to $repo_dir\nthis may take a while...\n"
 		git clone $repo $repo_dir
+		git_error_check $?
 	else
 		printf "Repo $repo_dir exists, pulling diff\nthis may take a while...\n"
 		cd $repo_dir
 		git pull
+		git_error_check $?
 	fi
 }
 
@@ -206,7 +230,7 @@ index_packages () {
 			fi
 		done
 	else
-		printf "No valid index_mode selected\n"
+		printf "\e[31mNo valid index_mode selected\e[0m\n"
 		exit 1
 	fi
 }
