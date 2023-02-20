@@ -7,7 +7,6 @@ main () {
 	# Import PGP keys from repo if any
 	import_pgp_keys () {
 		if [[ -d "$app_directory/keys" ]]; then
-			echo IMPORTING KEYS
 			gpg --import $app_directory/keys/pgp/*
 		fi
 	}
@@ -58,7 +57,7 @@ main () {
 
 							if [[ "$old_app_version" != "$app_version" ]]; then
 								# If the app version does not match we will assume an update is available and rebuild
-								printf "\e[31mNow building: $app_directory\e[0m\n"
+								printf "\e[32mNow building: $app_directory\e[0m\n"
 								cd $app_directory
 
 								# Ensure dependencies are installed
@@ -98,7 +97,7 @@ main () {
 
 			if [[ "$go_run" -eq 1 ]]; then
 				# If the app version does not match we will assume an update is available and rebuild
-				printf "\e[31mNow Building: $app_directory\e[0m\n"
+				printf "\e[32mNow Building: $app_directory\e[0m\n"
 				cd $app_directory
 
 				# Ensure dependencies are installed
@@ -207,6 +206,12 @@ index_packages () {
 		exit 1
 	fi
 }
+
+# makepkg does not allow running as root, kill the program if root
+if [[ $(id -u) -eq 0 ]]; then
+	printf "\e[31mScript is running as root, the script should be run as a normal user, quitting...\e[0m\n"
+	exit 1
+fi
 
 # If $1 is set we will assume the user is overwriting the config from the command line.
 if [[ -v 1 && $1 != "-" ]]; then
