@@ -58,7 +58,7 @@ main () {
 
 							if [[ "$old_app_version" != "$app_version" ]]; then
 								# If the app version does not match we will assume an update is available and rebuild
-								printf "\e[32mNow building: $app_directory\e[0m\n"
+								printf "\e[31mNow building: $app_directory\e[0m\n"
 								cd $app_directory
 
 								# Ensure dependencies are installed
