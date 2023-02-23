@@ -62,7 +62,7 @@ main () {
 
 								# Ensure dependencies are installed
 								source ./PKGBUILD
-								sudo pacman -Sy --noconfirm --needed ${depends} ${makedepends}
+								sudo pacman -Sy --noconfirm --needed ${makedepends}
 
 								# Import pgp keys if any
 								import_pgp_keys
@@ -102,7 +102,7 @@ main () {
 
 				# Ensure dependencies are installed
 				source ./PKGBUILD
-				sudo pacman -Sy --noconfirm --needed ${depends} ${makedepends}
+				sudo pacman -Sy --noconfirm --needed ${makedepends}
 
 				# Import pgp keys if any
 				import_pgp_keys
