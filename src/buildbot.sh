@@ -165,7 +165,7 @@ update_pkgbuild () {
 index_packages () {
 	cd $work_dir
 
-	for f in $(find "$(cd ..; pwd)" -name 'PKGBUILD'); do
+	for f in $(find "$(cd ..; pwd)" -name 'PKGBUILD' 2> /dev/null); do
 
 		if [[ $f != @(*staging*|*testing*|*i686*) ]]; then
 			source $f
