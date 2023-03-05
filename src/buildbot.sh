@@ -19,6 +19,18 @@ main () {
 		fi
 	}
 
+	# Clean up build leftovers to free disk space
+	cleanup() {
+		if [[ $cleanup -eq 1 ]]; then
+			mkdir -p $pkg_target_dir
+			cp $app_directory/$pkg_pattern $pkg_target_dir
+			
+			cd $app_directory
+			rm -rf *
+			git checkout .
+		fi
+	}
+
 	cd $work_dir
 
 	# If pkg.index.old exists this is not the first run
@@ -68,14 +80,19 @@ main () {
 								import_pgp_keys
 
 								# Build the package
-								makepkg ${makepkg_params}
+								makepkg ${makepkg_params[@]}
 								error_check $?
+					
+								cleanup
 							fi
 						fi
 						(( looptwo=looptwo+1 ))
 					done
 
-					go_run=0
+
+					if [[ "$go_run" == 1 ]]; then
+						go_run=0
+					fi
 				fi
 		done < ./pkg.index
 	else
@@ -108,8 +125,10 @@ main () {
 				import_pgp_keys
 
 				# Build the package
-				makepkg ${makepkg_params}
+				makepkg ${makepkg_params[@]}
 				error_check $?
+
+				cleanup
 			fi
 
 			if [[ "$go_run" == 1 ]]; then
