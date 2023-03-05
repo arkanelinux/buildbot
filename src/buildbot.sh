@@ -3,7 +3,7 @@
 main () {
 	update_pkgbuild
 	index_packages
-	
+
 	# Import PGP keys from repo if any
 	import_pgp_keys () {
 		if [[ -d "$app_directory/keys" ]]; then
@@ -47,7 +47,7 @@ main () {
 						app_version="$j"
 						go_run=1
 					else
-						app_directory="$j"
+						app_directory=$(dirname $j)
 					fi
 					(( loop=loop+1 ))
 				done
@@ -107,7 +107,7 @@ main () {
 				if (( loop % 2 )); then
 					go_run=1
 				else
-					app_directory="$j"
+					app_directory=$(dirname $j)
 				fi
 				(( loop=loop+1 ))
 			done
@@ -162,68 +162,17 @@ update_pkgbuild () {
 	fi
 }
 
-# Create an index of all packages
 index_packages () {
 	cd $work_dir
 
-	if [[ -f ./pkg.index ]]; then
-		mv pkg.index pkg.index.old
-	fi
+	for f in $(find "$(cd ..; pwd)" -name 'PKGBUILD'); do
 
-	if [[ $index_mode == 'long' ]]; then
-		for dir in $work_dir/$repo_dir/*; do
-			# dir = full filepath to package, eg. cowsay
-			# sub_dir = Typically repos and trunk
-			# package_dir = dir inside of repos, eg. community-x86_64
-			#
-			# sub_dir step could technically be removed and hard coded,
-			# but I am leaving it in for now
-			if [[ -d "$dir" ]]; then
-				cd $dir
+		if [[ $f != @(*staging*|*testing*|*i686*) ]]; then
+			source $f
+			printf "$f $pkgver-$pkgrel\n" >> $work_dir/pkg.index
+		fi
 
-				for sub_dir in *; do
-
-					if [[ "$sub_dir" != 'trunk' ]]; then
-						for package_dir in $sub_dir/*;
-						do
-
-							# Lets not build testing nor staging packages
-							if [[ "$package_dir" != *staging* && "$package_dir" != *testing* && "$package_dir" != *i686* && -d "$package_dir" ]]; then
-								cd $dir/$package_dir
-
-								if [[ -e ./PKGBUILD ]]; then
-									source ./PKGBUILD
-									printf "$dir/$package_dir $pkgver-$pkgrel\n" >> $work_dir/pkg.index
-								else
-									printf "No PKGBUILD file for $dir/$package_dir\n"
-								fi
-							fi
-
-						done
-					fi
-
-				done
-			fi
-		done
-	elif [[ $index_mode == 'short' ]]; then
-		# If short index_mode is selected
-		for dir in $work_dir/$repo_dir/*; do
-			if [[ -d "$dir" ]]; then
-				cd $dir
-
-				if [[ -e ./PKGBUILD ]]; then
-					source ./PKGBUILD
-					printf "$dir/$package_dir $pkgver-$pkgrel\n" >> $work_dir/pkg.index
-				else
-					printf "No PKGBUILD file for $dir/$package_dir\n"
-				fi
-
-			fi
-		done
-	else
-		printf "\e[31mNo valid index_mode selected\e[0m\n"
-		exit 1
-	fi
+	done
 }
 
 # makepkg does not allow running as root, kill the program if root
@@ -247,13 +196,6 @@ else
 		printf "\e[31mFailed to run default config file '/etc/buildbot.sh', quitting...\e[0m\n"
 		exit 1
 	fi
-fi
-	
-# By default set index mode to long
-# TODO: Make it autodetect if undefined or empty
-if [[ ! -v index_mode || $index_mode == '' ]]; then
-	printf "\e[31mIndex mode is not defined, defaulting to 'long' mode\e[0m\n"
-	index_mode='long'
 fi
 
 # These variables are required to all be defined in the config file
