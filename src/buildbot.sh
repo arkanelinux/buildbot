@@ -15,7 +15,7 @@ main () {
 	error_check () {
 		if [[ ! $1 -eq 0 ]]; then
 			printf "Building $current_dir failed with exit code $1\n"
-			printf "$app_directory $1\n" >> "$log_dir/buildbot.log"
+			printf "$(date) $app_directory $1\n" >> "$log_dir/buildbot.log"
 		fi
 	}
 
