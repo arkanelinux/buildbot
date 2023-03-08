@@ -190,10 +190,10 @@ if [[ -v 1 && $1 != "-" ]]; then
 		exit 1
 	fi
 else
-	source /etc/buildbot.conf
+	source /etc/buildbot/config
 	
 	if [[ ! $? -eq 0 ]]; then
-		printf "\e[31mFailed to run default config file '/etc/buildbot.sh', quitting...\e[0m\n"
+		printf "\e[31mFailed to run default config file '/etc/buildbot/config', quitting...\e[0m\n"
 		exit 1
 	fi
 fi
