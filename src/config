@@ -7,8 +7,8 @@
 # REPOSITORY CONFIGURATION
 #########################################################################
 #
-repo='git@github.com:arkanelinux/pkgbuild.git'
-repo_dir='pkgbuild'
+repo='https://github.com/archlinux/svntogit-packages.git'
+repo_dir='svntogit-packages'
 
 #########################################################################
 # SCRIPT SETTINGS
