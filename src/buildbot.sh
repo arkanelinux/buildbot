@@ -167,7 +167,7 @@ index_packages () {
 
 	for f in $(find "$(cd ..; pwd)" -name 'PKGBUILD' 2> /dev/null); do
 
-		if [[ $f != @(*staging*|*testing*|*i686*) ]]; then
+		if [[ $f != @(*staging*|*testing*|*i686*|*i386*|*trunk*) ]]; then
 			source $f
 			printf "$f $pkgver-$pkgrel\n" >> $work_dir/pkg.index
 		fi
