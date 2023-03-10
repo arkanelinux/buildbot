@@ -89,7 +89,7 @@ main () {
 								import_pgp_keys
 
 								# Build the package
-								makepkg ${makepkg_params[@]}
+								timeout ${timeout_after} makepkg ${makepkg_params[@]}
 								error_check $?
 					
 								cleanup
@@ -144,7 +144,7 @@ main () {
 				import_pgp_keys
 
 				# Build the package
-				makepkg ${makepkg_params[@]}
+				timeout ${timeout_after}makepkg ${makepkg_params[@]}
 				error_check $?
 
 				cleanup

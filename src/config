@@ -19,6 +19,12 @@ makepkg_params=('-fcd' '--skippgpcheck')
 cleanup=1
 pkg_target_dir="$HOME/build-target"
 pkg_pattern='*.pkg.tar.zst'
+# -- Duration after which timeout quits makepkg process
+# This is to allow the buildbot to continue running even if
+# the makepkg process freezes
+timeout_after='4h'
+# -- Exclude packages containing these strings
+exclude=('java')
 
 #########################################################################
 # SCRIPT OVERRIDES
@@ -26,4 +32,3 @@ pkg_pattern='*.pkg.tar.zst'
 #
 # -- Optional work_dir override
 #work_dir='/home/user'
-exclude=('java')
