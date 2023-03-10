@@ -45,7 +45,16 @@ main () {
 				for j in $i; do
 					if (( loop % 2 )); then
 						app_version="$j"
-						go_run=1
+
+						# Do not build if in exclude list
+						for a in $exclude; do
+							if [[ $app_directory == *"$a"* ]]; then
+								printf "\e[32mExcluding: $app_directory\e[0m\n"
+								go_run=0
+							else
+								go_run=1
+							fi
+						done
 					else
 						app_directory=$(dirname $j)
 					fi
@@ -105,7 +114,17 @@ main () {
 
 			for j in $i; do
 				if (( loop % 2 )); then
-					go_run=1
+
+					# Do not build if in exclude list
+					for a in $exclude; do
+						if [[ $app_directory == *"$a"* ]]; then
+							printf "\e[32mExcluding: $app_directory\e[0m\n"
+							go_run=0
+						else
+							go_run=1
+						fi
+					done
+
 				else
 					app_directory=$(dirname $j)
 				fi
