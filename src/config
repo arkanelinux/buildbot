@@ -26,4 +26,4 @@ pkg_pattern='*.pkg.tar.zst'
 #
 # -- Optional work_dir override
 #work_dir='/home/user'
-exlude=('java')
+exclude=('java')
