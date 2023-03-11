@@ -1,0 +1,12 @@
+[Unit]
+Description=Arkane Linux buildbot service
+
+[Service]
+Type=simple
+User=builduser
+Group=builduser
+ExecStart=/usr/bin/buildbot.sh
+WorkingDirectory=/home/builduser
+
+[Install]
+WantedBy=multi-user.target
