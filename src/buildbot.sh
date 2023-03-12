@@ -20,7 +20,7 @@ main () {
 	}
 
 	# Clean up build leftovers to free disk space
-	cleanup() {
+	cleanup () {
 		if [[ $cleanup -eq 1 ]]; then
 			mkdir -p $pkg_target_dir
 			cp $app_directory/$pkg_pattern $pkg_target_dir
@@ -89,7 +89,7 @@ main () {
 								import_pgp_keys
 
 								# Build the package
-								timeout ${timeout_after} makepkg ${makepkg_params[@]}
+								( timeout ${timeout_after} makepkg ${makepkg_params[@]} )
 								error_check $?
 					
 								cleanup
@@ -144,7 +144,7 @@ main () {
 				import_pgp_keys
 
 				# Build the package
-				timeout ${timeout_after}makepkg ${makepkg_params[@]}
+				( timeout ${timeout_after} makepkg ${makepkg_params[@]} )
 				error_check $?
 
 				cleanup
