@@ -37,9 +37,9 @@ main () {
 	# so we can start checking for updates
 	if [[ -f ./pkg.index.old ]]; then
 
+		readarray i < ./pkg.index
 
-		# Get both app name and version
-		while read i; do
+		for arr in "${i[@]}"; do
 				cd $work_dir
 
 				for j in $i; do
@@ -103,13 +103,15 @@ main () {
 						go_run=0
 					fi
 				fi
-		done < ./pkg.index
+			done
 	else
 		# If this is the first run we can assume we will have to build everything
 		# not the most elegant solution but it will do for now
 		printf "pkg.index.old does not exist, assuming first run\n"
 
-		while read i; do
+		readarray i < ./pkg.index
+
+		for arr in "${i[@]}"; do
 			cd $work_dir
 
 			for j in $i; do
@@ -153,7 +155,7 @@ main () {
 			if [[ "$go_run" == 1 ]]; then
 				go_run=0
 			fi
-		done < ./pkg.index
+		done
 	fi
 }
 
