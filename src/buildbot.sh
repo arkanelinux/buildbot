@@ -42,7 +42,7 @@ main () {
 		for arr in "${i[@]}"; do
 				cd $work_dir
 
-				for j in $i; do
+				for j in $arr; do
 					if (( loop % 2 )); then
 						app_version="$j"
 
@@ -114,7 +114,7 @@ main () {
 		for arr in "${i[@]}"; do
 			cd $work_dir
 
-			for j in $i; do
+			for j in $arr; do
 				if (( loop % 2 )); then
 
 					# Do not build if in exclude list
