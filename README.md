@@ -1,5 +1,5 @@
-# Buildbot
-The Arkane Buildbot is a script used to pull, index and build Arch Linux pkgbuild Git repos.
+# arkane-buildbot
+The Arkane Linux Buildbot is a script used to pull, index and build Arch Linux pkgbuild Git repos.
 
 ## Setup
 ### 1. Create and set up builduser
@@ -19,9 +19,8 @@ builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 Customize your build configuration at `/etc/buildbot/`. Alternatively you can also create a new seperate config file and overwrite the config file used with `$1`, eg `arkane-buildbot /etc/buildbot/custom_config`.
 
 ### 3. (Optional) Set custom build settings
-Edit `/etc/makepkg.conf` with your custom build environment settings.
+Edit `/etc/makepkg.conf` with your custom build environment settings, this is what Arkane is using;
 
-For example, change the compiler flags;
 ```bash
 CFLAGS="-march=x86-64-v3 -mtune=generic -O2 -ftree-vectorize -pipe -fno-plt -fexceptions \
         -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
@@ -40,4 +39,4 @@ arkane-buildbot [FILE]
 ### Options and arguments
 | Argument | Description | Example |
 | --- | --- | --- |
-| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default file instead. | `buildscript ./custom.conf` |
+| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default file instead. | `arkane-buildbot ./custom.conf` |
