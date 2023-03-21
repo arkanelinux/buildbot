@@ -16,14 +16,14 @@ builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
 ### 2. Customize configuration
-Customize the configuration of `/etc/buildbot/config`. Alternatively you can also create a new seperate config file and overwrite the config file used with `$1`, eg `buildbot /etc/buildbot/custom_config`.
+Customize your build configuration at `/etc/buildbot/`. Alternatively you can also create a new seperate config file and overwrite the config file used with `$1`, eg `arkane-buildbot /etc/buildbot/custom_config`.
 
 ### 3. (Optional) Set custom build settings
 Edit `/etc/makepkg.conf` with your custom build environment settings.
 
 For example, change the compiler flags;
 ```bash
-CFLAGS="-march=x86-64-v3 -mtune=generic -O2 -pipe -fno-plt -fexceptions \
+CFLAGS="-march=x86-64-v3 -mtune=generic -O2 -ftree-vectorize -pipe -fno-plt -fexceptions \
         -Wp,-D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security \
         -fstack-clash-protection -fcf-protection"
 CXXFLAGS="$CFLAGS -Wp,-D_GLIBCXX_ASSERTIONS"
@@ -34,7 +34,7 @@ MAKEFLAGS="-j16"
 ## Usage
 ### Running the program
 ```bash
-./buildscript.sh [FILE]
+arkane-buildbot [FILE]
 ```
 
 ### Options and arguments
