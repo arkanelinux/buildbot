@@ -1,34 +1,24 @@
 #!/hint/bash
-#
-# /etc/buildbot.conf
-#
 
 #########################################################################
 # REPOSITORY CONFIGURATION
 #########################################################################
 #
-repo='https://github.com/archlinux/svntogit-packages.git'
-repo_dir='svntogit-packages'
+repo='https://github.com/archlinux/svntogit-community.git'
+repo_dir='svntogit-community'
 
 #########################################################################
 # SCRIPT SETTINGS
 #########################################################################
 #
-log_dir="$HOME/.local/state/buildbot"
-makepkg_params=('-fcd' '--skippgpcheck')
+work_dir="$HOME/$repo_name"
+log_dir="$work_dir"
 cleanup=1
-pkg_target_dir="$HOME/build-target"
+pkg_target_dir="$HOME/target-svntogit-community"
 pkg_pattern='*.pkg.tar.zst'
 # -- Duration after which timeout quits makepkg process
 # This is to allow the buildbot to continue running even if
 # the makepkg process freezes
 timeout_after='4h'
 # -- Exclude packages containing these strings
-exclude=('java')
-
-#########################################################################
-# SCRIPT OVERRIDES
-#########################################################################
-#
-# -- Optional work_dir override
-#work_dir='/home/user'
+exclude=('staging' 'testing' 'i686' 'i386' 'trunk' 'unstable')

@@ -1,0 +1,24 @@
+#!/hint/bash
+
+#########################################################################
+# REPOSITORY CONFIGURATION
+#########################################################################
+#
+repo='https://github.com/archlinux/svntogit-packages.git'
+repo_dir='svntogit-packages'
+
+#########################################################################
+# SCRIPT SETTINGS
+#########################################################################
+#
+work_dir="$HOME/$repo_name"
+log_dir="$work_dir"
+cleanup=1
+pkg_target_dir="$HOME/target-arch-packages"
+pkg_pattern='*.pkg.tar.zst'
+# -- Duration after which timeout quits makepkg process
+# This is to allow the buildbot to continue running even if
+# the makepkg process freezes
+timeout_after='4h'
+# -- Exclude packages containing these strings
+exclude=('staging' 'testing' 'i686' 'i386' 'trunk' 'unstable')

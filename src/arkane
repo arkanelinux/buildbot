@@ -1,0 +1,25 @@
+#!/hint/bash
+
+#########################################################################
+# REPOSITORY CONFIGURATION
+#########################################################################
+#
+repo='https://github.com/arkanelinux/pkgbuild'
+repo_name='arkane-repo'
+
+#########################################################################
+# SCRIPT SETTINGS
+#########################################################################
+#
+work_dir="$HOME/$repo_name"
+log_dir="$work_dir"
+makepkg_params=('-fcd' '--skippgpcheck')
+cleanup=1
+pkg_target_dir="$HOME/target-arkane-repo"
+pkg_pattern='*.pkg.tar.zst'
+# -- Duration after which timeout quits makepkg process
+# This is to allow the buildbot to continue running even if
+# the makepkg process freezes
+timeout_after='1h'
+# -- Exclude packages containing these strings
+exclude=()

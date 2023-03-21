@@ -5,7 +5,8 @@ Description=Arkane Linux buildbot service
 Type=simple
 User=builduser
 Group=builduser
-ExecStart=/usr/bin/buildbot.sh
+Environment="SCRIPT_ARGS=%I"
+ExecStart=/usr/bin/arkane-buildbot $SCRIPT_ARGS
 WorkingDirectory=/home/builduser
 
 [Install]
