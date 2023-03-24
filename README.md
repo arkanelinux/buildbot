@@ -18,7 +18,8 @@ builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ### 2. (Optional) Customize configuration
 There are a couple of default configs included, see `/etc/arkane-buildbot/` for available default configs.
 
-> **Note** It is best to not edit these config files for they may be overwritten if you ever update arkane-buildbot, thus instead create a new custom config instead
+> **Note** It is best to not edit these config files for they may be overwritten if you ever update arkane-buildbot, thus it is best to create a new custom config instead
+
 You can also create a new config file under a custom name in this location.
 
 ### 3. (Optional) Set custom build settings
