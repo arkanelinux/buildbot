@@ -5,7 +5,7 @@
 #########################################################################
 #
 repo='https://github.com/archlinux/svntogit-packages.git'
-repo_dir='svntogit-packages'
+repo_name='svntogit-packages'
 
 #########################################################################
 # SCRIPT SETTINGS

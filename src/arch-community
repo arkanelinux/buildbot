@@ -5,7 +5,7 @@
 #########################################################################
 #
 repo='https://github.com/archlinux/svntogit-community.git'
-repo_dir='svntogit-community'
+repo_name='svntogit-community'
 
 #########################################################################
 # SCRIPT SETTINGS
