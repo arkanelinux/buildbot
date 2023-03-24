@@ -44,9 +44,11 @@ arkane-buildbot [FILE]
 ### Running using the systemd service
 > **Note** Ensure the builduser is created and properly configured, or alternatively copy/edit the service to use a custom workdir and user
 
+> **Note** Dashes are not valid in variables
+
 The services takes a variable as input, provide it with the name of the config file you wish to run located in `/etc/arkane-buildbot/`.
 ```bash
-systemctl start arkane-buildbot@arch-community.service
+systemctl start arkane-buildbot@arch_community.service
 ```
 
 ### Options and arguments
