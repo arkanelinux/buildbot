@@ -13,6 +13,7 @@ repo_name='svntogit-packages'
 #
 work_dir="$HOME/$repo_name"
 log_dir="$work_dir"
+makepkg_params=('-fcd' '--skippgpcheck' '--nocheck')
 cleanup=1
 pkg_target_dir="$HOME/target-arch-packages"
 pkg_pattern='*.pkg.tar.zst'
