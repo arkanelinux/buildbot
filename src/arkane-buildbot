@@ -187,14 +187,14 @@ fi
 
 # If $1 is set we will assume the user is overwriting the config from the command line.
 if [[ -v 1 && $1 != "-" ]]; then
-	source $1
+	source "/etc/arkane-buildbot$1"
 
 	if [[ ! $? -eq 0 ]]; then
 		printf "\e[31mFailed to run custom config file '$1', quitting...\e[0m\n"
 		exit 1
 	fi
 else
-	default_config='/etc/buildbot/default'
+	default_config='/etc/arkane-buildbot/default'
 
 	source $default_config
 	
