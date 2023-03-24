@@ -24,13 +24,13 @@ main () {
 		if [[ $cleanup -eq 1 ]]; then
 
 			# TODO: I am hard coding this for now, will change later
-			if [[ "$app_directory" == "*/core-*" ]]; then
+			if [[ "$app_directory" == *"/core-"* ]]; then
 				mkdir -p $pkg_target_dir/core
 				cp $app_directory/$pkg_pattern $pkg_target_dir/core/
-			elif [[ "$app_directory" == "*/extra-*" ]]; then
+			elif [[ "$app_directory" == *"/extra-"* ]]; then
 				mkdir -p $pkg_target_dir/extra
 				cp $app_directory/$pkg_pattern $pkg_target_dir/extra/
-			elif [[ "$app_directory" == "*/community-*" ]]; then
+			elif [[ "$app_directory" == *"/community-"* ]]; then
 				mkdir -p $pkg_target_dir/community
 				cp $app_directory/$pkg_pattern $pkg_target_dir/community/
 			else
@@ -179,11 +179,16 @@ index_packages () {
 
 			for a in ${exclude[@]}; do
 				if [[ $f == *"$a"* ]]; then
-					printf "\e[32mExcluding: $f\e[0m\n"
-				else
-					index
+					go_exclude=1
 				fi
 			done
+
+			if [[ $go_exclude -eq 1 ]]; then
+					printf "\e[32mExcluding: $f\e[0m\n"
+					go_exclude=0
+			else
+				index
+			fi
 
 		else
 			index
