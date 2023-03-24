@@ -15,8 +15,10 @@ We will have to set up the sudoers file to allow for this by adding the followin
 builduser	ALL=(root)	NOPASSWD: SETENV: /usr/bin/pacman
 ```
 
-### 2. Customize configuration
-Customize your build configuration at `/etc/buildbot/`. Alternatively you can also create a new seperate config file and overwrite the config file used with `$1`, eg `arkane-buildbot /etc/buildbot/custom_config`.
+### 2. (Optional) Customize configuration
+Customize your build configuration at `/etc/arkane-buildbot/`. Alternatively you can also create a new seperate config file and overwrite the config file used with `$1`, eg `arkane-buildbot /etc/arkane-buildbot/custom_config`.
+
+There are a couple of default configs included, see `/etc/arkane-buildbot/` for available default configs.
 
 ### 3. (Optional) Set custom build settings
 Edit `/etc/makepkg.conf` with your custom build environment settings, this is what Arkane is using;
@@ -31,12 +33,21 @@ MAKEFLAGS="-j16"
 ```
 
 ## Usage
-### Running the program
+### Running the program manually
 ```bash
+# If no file provided attempts to run /etc/arkane-buildbot/default instead
 arkane-buildbot [FILE]
+```
+
+### Running using the systemd service
+> **Note** Ensure the builduser is created and properly configured, or alternatively copy/edit the service to use a custom workdir and user
+
+The services takes a variable as input, provide it with the name of the config file you wish to run located in `/etc/arkane-buildbot/`.
+```bash
+systemctl start arkane-buildbot@arch-community.service
 ```
 
 ### Options and arguments
 | Argument | Description | Example |
 | --- | --- | --- |
-| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file. Inputting a `-` will make it use the default file instead. | `arkane-buildbot ./custom.conf` |
+| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file, it reads the files from `/etc/arkane-buildbot/*`. Inputting a `-` will make it use the default file instead. | `arkane-buildbot custom_config` |
