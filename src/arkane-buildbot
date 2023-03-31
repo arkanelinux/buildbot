@@ -21,6 +21,46 @@ main () {
 
 	# Clean up build leftovers to free disk space
 	cleanup () {
+
+		# Create an index of the copied packages
+		index_package () {
+
+			for f in $(ls $app_directory | grep *"$pkg_pattern"*); do
+				printf "$app_directory $f\n" >> "$work_dir/archive.index"
+			done
+
+		}
+
+		clear_old_package () {
+
+			if [[ -f "$work_dir/archive.index.old" ]]; then
+				readarray i < "$work_dir/archive.index.old"
+
+				for arr in "${i[@]}"; do
+
+					for j in $arr; do
+						if (( loop % 2 )); then
+							filename="$j"
+						else
+							path="$j"
+						fi
+						(( loop=loop+1 ))
+					done
+
+					if [[ "$path" == "$app_directory" ]]; then
+
+						cd $pkg_target_dir
+						rm_target=$(find . -name $filename 2> /dev/null)
+
+						rm $rm_target
+
+					fi
+
+				done
+			fi
+
+		}
+
 		if [[ $cleanup -eq 1 ]]; then
 
 			# TODO: I am hard coding this for now, will change later
@@ -35,6 +75,8 @@ main () {
 				cp $app_directory/$pkg_pattern $pkg_target_dir/community/
 			else
 				mkdir -p $pkg_target_dir
+				index_package
+				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir
 			fi
 			
@@ -236,9 +278,16 @@ if [[ ! -d $log_dir ]]; then
 	exit 1
 fi
 
+# An index of all packages in the repo
 if [[ -f $work_dir/pkg.index ]]; then
 	mv "$work_dir/pkg.index" "$work_dir/pkg.index.old"
+	touch "$work_dir/pkg.index"
 fi
 
+# An index of all build packages
+if [[ -f $work_dir/archive.index ]]; then
+	mv "$work_dir/archive.index" "$work_dir/archive.index.old"
+	touch "$work_dir/archive.index"
+fi
 
 main
