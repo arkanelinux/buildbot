@@ -98,7 +98,6 @@ main () {
 						old_app_version="$q"
 
 						if [[ "$old_app_version" != "$app_version" ]]; then
-						echo "$app_version $old_app_version"
 							build_package
 						fi
 					fi
