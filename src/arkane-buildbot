@@ -66,12 +66,18 @@ main () {
 			# TODO: I am hard coding this for now, will change later
 			if [[ "$app_directory" == *"/core-"* ]]; then
 				mkdir -p $pkg_target_dir/core
+				index_package
+				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/core/
 			elif [[ "$app_directory" == *"/extra-"* ]]; then
 				mkdir -p $pkg_target_dir/extra
+				index_package
+				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/extra/
 			elif [[ "$app_directory" == *"/community-"* ]]; then
 				mkdir -p $pkg_target_dir/community
+				index_package
+				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/community/
 			else
 				mkdir -p $pkg_target_dir
