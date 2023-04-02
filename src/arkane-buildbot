@@ -22,11 +22,10 @@ main () {
 	# Clean up build leftovers to free disk space
 	cleanup () {
 
-
 		clear_old_package () {
 
 			# Create an index of the package archives
-			index_package () {
+			index_archive () {
 
 				for f in $(ls $app_directory | grep *"$pkg_pattern"*); do
 					printf "$app_directory $f\n" >> "$work_dir/archive.index"
@@ -35,42 +34,54 @@ main () {
 			}
 
 			if [[ -f "$work_dir/archive.index" && -s "$work_dir/archive.index" ]]; then
-				readarray i < "$work_dir/archive.index"
+				readarray archive_index < "$work_dir/archive.index"
 
-				for arr in "${i[@]}"; do
+				# Remove old packages
+				for arr in "${archive_index[@]}"; do
+					path=${arr[1]}
+					filenames="${arr[@]:1}"
 
-					for j in $arr; do
-						if (( loop % 2 )); then
-							filename="$j"
-						else
-							path="$j"
-						fi
-						(( loop=loop+1 ))
-					done
+					# If we match a line that means it is already in the index
+					if [[ "$path" == "$app_directory" ]]; then
+						# Find all package archives matching pattern and remove them
+						for file in filenames; do
+							rm_target=$(find $pkg_target_dir -name $file 2> /dev/null)
 
+							rm $rm_target
+						done
+					fi
+				done
+
+				new_pkg=1
+
+				# Remove old archive.index entries
+				for arr in "${archive_index[@]}"; do
+					path=${arr[1]}
+					filenames="${arr[@]:1}"
+
+
+					# If we match a line that means it is already in the index
 					if [[ "$path" == "$app_directory" ]]; then
 
-						cd $pkg_target_dir
+						# Remove all lines containing $path/$app_directory
+						grep -v "$path" "$work_dir/archive.index" > "$work_dir/archive.index.inter"
+						mv "$work_dir/archive.index.inter" "$work_dir/archive.index"
 
-						archive=$(ls $app_directory | grep *"$pkg_pattern"*);
+						# Index new package archives
+						index_archive
 
-						# Check if already indexed
-						grep "$path" "$work_dir/archive.index" > /dev/null
-						if [[ $? -eq 0 ]]; then
-							sed -i "s|.*$path.*|$app_directory $archive|g" $work_dir/archive.index
-						else
-							index_package
-						fi
-
-						rm_target=$(find . -name $filename 2> /dev/null)
-
-						rm $rm_target
+						new_pkg=0
 
 					fi
 
 				done
 			else
-				index_package
+				index_archive
+			fi
+
+			# The package is new, lets index it
+			if [[ $new_pkg -eq 1 ]]; then
+				index_archive
 			fi
 
 		}
@@ -141,30 +152,28 @@ main () {
 					(( loop=loop+1 ))
 				done
 
-				# If both app_version and app_directory are indexed look for this package in pkg.index.old
+				# Check if package already present in pkg.index.old, if it is the package was
+				# build previously and should only check for updates
 				result=$(grep "^${app_directory}/" "$work_dir/pkg.index.old")
+				result_exit=$?
 
 				# Set var to error to assure package build if app_directory is missing from the pkg.index.old
 				# this will trigger when new packages are added to the repo
-				if [[ $? != 0 ]]; then
-					result='error'
-				fi
+				if [[ $result_exit -eq 1 ]]; then
+					build_package
+				else
+					for q in $result; do
 
-				for q in $result; do
+						if (( looptwo % 2 )); then
+							old_app_version="$q"
 
-					if (( looptwo % 2 )); then
-						old_app_version="$q"
-
-						if [[ "$old_app_version" != "$app_version" ]]; then
-							build_package
+							if [[ "$old_app_version" != "$app_version" ]]; then
+								build_package
+							fi
 						fi
-					fi
-					(( looptwo=looptwo+1 ))
-				done
+						(( looptwo=looptwo+1 ))
 
-
-				if [[ "$go_run" == 1 ]]; then
-					go_run=0
+					done
 				fi
 			done
 	else
