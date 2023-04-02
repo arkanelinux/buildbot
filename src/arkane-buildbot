@@ -22,19 +22,20 @@ main () {
 	# Clean up build leftovers to free disk space
 	cleanup () {
 
-		# Create an index of the copied packages
-		index_package () {
-
-			for f in $(ls $app_directory | grep *"$pkg_pattern"*); do
-				printf "$app_directory $f\n" >> "$work_dir/archive.index"
-			done
-
-		}
 
 		clear_old_package () {
 
-			if [[ -f "$work_dir/archive.index.old" ]]; then
-				readarray i < "$work_dir/archive.index.old"
+			# Create an index of the package archives
+			index_package () {
+
+				for f in $(ls $app_directory | grep *"$pkg_pattern"*); do
+					printf "$app_directory $f\n" >> "$work_dir/archive.index"
+				done
+
+			}
+
+			if [[ -f "$work_dir/archive.index" && -s "$work_dir/archive.index" ]]; then
+				readarray i < "$work_dir/archive.index"
 
 				for arr in "${i[@]}"; do
 
@@ -50,6 +51,17 @@ main () {
 					if [[ "$path" == "$app_directory" ]]; then
 
 						cd $pkg_target_dir
+
+						archive=$(ls $app_directory | grep *"$pkg_pattern"*);
+
+						# Check if already indexed
+						grep "$path" "$work_dir/archive.index" > /dev/null
+						if [[ $? -eq 0 ]]; then
+							sed -i "s|.*$path.*|$app_directory $archive|g" $work_dir/archive.index
+						else
+							index_package
+						fi
+
 						rm_target=$(find . -name $filename 2> /dev/null)
 
 						rm $rm_target
@@ -57,6 +69,8 @@ main () {
 					fi
 
 				done
+			else
+				index_package
 			fi
 
 		}
@@ -66,22 +80,18 @@ main () {
 			# TODO: I am hard coding this for now, will change later
 			if [[ "$app_directory" == *"/core-"* ]]; then
 				mkdir -p $pkg_target_dir/core
-				index_package
 				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/core/
 			elif [[ "$app_directory" == *"/extra-"* ]]; then
 				mkdir -p $pkg_target_dir/extra
-				index_package
 				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/extra/
 			elif [[ "$app_directory" == *"/community-"* ]]; then
 				mkdir -p $pkg_target_dir/community
-				index_package
 				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir/community/
 			else
 				mkdir -p $pkg_target_dir
-				index_package
 				clear_old_package
 				cp $app_directory/$pkg_pattern $pkg_target_dir
 			fi
@@ -291,8 +301,7 @@ if [[ -f $work_dir/pkg.index ]]; then
 fi
 
 # An index of all build packages
-if [[ -f $work_dir/archive.index ]]; then
-	mv "$work_dir/archive.index" "$work_dir/archive.index.old"
+if [[ ! -f $work_dir/archive.index ]]; then
 	touch "$work_dir/archive.index"
 fi
 
