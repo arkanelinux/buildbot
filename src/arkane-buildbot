@@ -26,70 +26,60 @@ main () {
 
 		clear_old_package () {
 
-			declare path
-			declare filenames
-
-			declare -i new_pkg
-
 			# Create an index of the package archives
 			index_archive () {
+				for result in $(ls $app_directory); do
 
-				for f in $(ls $app_directory | grep *"$pkg_pattern"*); do
-					printf "$app_directory $f\n" >> "$work_dir/archive.index"
+					if [[ $result == *$pkg_pattern ]]; then
+						printf "$app_directory:$result\n" >> "$work_dir/archive.index"
+					fi
+
 				done
 
 			}
 
-			if [[ -f "$work_dir/archive.index" && -s "$work_dir/archive.index" ]]; then
-				readarray archive_index < "$work_dir/archive.index"
+			# TODO: Clean up pkg_pattern situation, allow the use of wildcards inside
+			# of the variable itself so it no longer has to be hard coded
 
-				# Remove old packages
-				for arr in "${archive_index[@]}"; do
-					path=${arr[1]}
-					filenames="${arr[@]:1}"
+			declare archive_rows
+			readarray archive_rows < "$work_dir/archive.index"
 
-					# If we match a line that means it is already in the index
-					if [[ "$path" == "$app_directory" ]]; then
-						# Find all package archives matching pattern and remove them
-						for file in filenames; do
-							rm_target=$(find $pkg_target_dir -name $file 2> /dev/null)
+			# Process the row, setting the path and package files to
+			# apropriate variables
+			for row in ${archive_rows[@]}; do
 
-							rm $rm_target
-						done
-					fi
-				done
+				declare row_spaced=$(printf "$row\n" | sed 's/:/ /g')
+				declare loop=0
 
-				new_pkg=1
+				declare package_path=""
+				declare package_files=""
 
-				# Remove old archive.index entries
-				for arr in "${archive_index[@]}"; do
-					path=${arr[1]}
-					filenames="${arr[@]:1}"
+				for col in $row_spaced; do
 
-
-					# If we match a line that means it is already in the index
-					if [[ "$path" == "$app_directory" ]]; then
-
-						# Remove all lines containing $path/$app_directory
-						grep -v "$path" "$work_dir/archive.index" > "$work_dir/archive.index.inter"
-						mv "$work_dir/archive.index.inter" "$work_dir/archive.index"
-
-						# Index new package archives
-						index_archive
-
-						new_pkg=0
-
+					if [[ $loop -eq 0 ]]; then
+						package_path="$col"
+						(( loop=loop+1 ))
+					else
+						package_files="$package_files $col"
 					fi
 
 				done
-			else
-				index_archive
-			fi
 
-			# The package is new, lets index it
-			if [[ $new_pkg -eq 1 ]]; then
-				index_archive
-			fi
+				if [[ "$app_directory" == "$package_path" ]]; then
+
+					for package in $package_files; do
+						rm $(find $pkg_target_dir -name $package 2> /dev/null)
+
+						# Remove old entries
+						grep -v $package $work_dir/archive.index > $work_dir/archive.index.tmp
+						mv $work_dir/archive.index.tmp $work_dir/archive.index
+
+					done
+				fi
+			done
+
+			# Index new entry
+			index_archive
 
 		}
 
@@ -99,21 +89,21 @@ main () {
 			if [[ "$app_directory" == *"/core-"* ]]; then
 				mkdir -p $pkg_target_dir/core
 				clear_old_package
-				cp $app_directory/$pkg_pattern $pkg_target_dir/core/
+				cp $app_directory/*$pkg_pattern $pkg_target_dir/core/
 			elif [[ "$app_directory" == *"/extra-"* ]]; then
 				mkdir -p $pkg_target_dir/extra
 				clear_old_package
-				cp $app_directory/$pkg_pattern $pkg_target_dir/extra/
+				cp $app_directory/*$pkg_pattern $pkg_target_dir/extra/
 			elif [[ "$app_directory" == *"/community-"* ]]; then
 				mkdir -p $pkg_target_dir/community
 				clear_old_package
-				cp $app_directory/$pkg_pattern $pkg_target_dir/community/
+				cp $app_directory/*$pkg_pattern $pkg_target_dir/community/
 			else
 				mkdir -p $pkg_target_dir
 				clear_old_package
-				cp $app_directory/$pkg_pattern $pkg_target_dir
+				cp $app_directory/*$pkg_pattern $pkg_target_dir
 			fi
-			
+
 			cd $app_directory
 			rm -rf *
 			git checkout .
@@ -227,7 +217,7 @@ update_pkgbuild () {
 			exit 1
 		fi
 	}
-	
+
 	# Check if repo exists
 	if [[ ! -d ./$repo_name ]]; then
 		printf "Repo does not exist, cloning $repo to $repo_name\nthis may take a while...\n"
@@ -294,7 +284,7 @@ else
 	declare default_config='/etc/arkane-buildbot/default'
 
 	source $default_config
-	
+
 	if [[ ! $? -eq 0 ]]; then
 		printf "\e[31mFailed to run default config file '$default_config', quitting...\e[0m\n"
 		exit 1
