@@ -16,7 +16,7 @@ log_dir="$work_dir"
 makepkg_params=('-fcd' '--skippgpcheck')
 cleanup=1
 pkg_target_dir="$HOME/target-arkane-repo"
-pkg_pattern='*.pkg.tar.zst'
+pkg_pattern='.pkg.tar.zst'
 # -- Duration after which timeout quits makepkg process
 # This is to allow the buildbot to continue running even if
 # the makepkg process freezes
