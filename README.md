@@ -54,4 +54,4 @@ systemctl start arkane-buildbot@arch_community.service
 ### Options and arguments
 | Argument | Description | Example |
 | --- | --- | --- |
-| [FILE] | The optional argument `$1` is utilized for overwriting the default configuration file, it reads the files from `/etc/arkane-buildbot/*`. Inputting a `-` will make it use the default file instead. | `arkane-buildbot custom_config` |
+| [FILE] | The `$1` argument is used to define which config file located in `/etc/arkane-buildbot/` it should utilize. If undefined or if a `-` is passed it defaults to `/etc/arkane-buildbot/default` | `arkane-buildbot custom_config` |
