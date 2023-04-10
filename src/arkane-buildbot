@@ -205,6 +205,9 @@ main () {
 			fi
 		done
 	fi
+
+	# We finished succesfully
+	exit 0
 }
 
 # Pull the latest Arch pkgbuild repo
