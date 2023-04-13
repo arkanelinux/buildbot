@@ -1,0 +1,26 @@
+--- pacman.conf	2023-04-14 00:16:13.802400920 +0200
++++ pacman.conf	2023-04-14 00:19:22.209780397 +0200
+@@ -69,6 +69,23 @@
+ # repo name header and Include lines. You can add preferred servers immediately
+ # after the header, and they will be used before the default mirrors.
+ 
++# These series of repos are for the x86-64-v3 Arkane Linux rebuilds of Arch Linux
++# packages
++#
++# Remove or disable these to switch back to stock Arch Linux
++
++[arkane-core]
++Server = https://repo.arkanelinux.org/$repo/os/$arch
++
++[arkane-extra]
++Server = https://repo.arkanelinux.org/$repo/os/$arch
++
++[arkane-community]
++Server = https://repo.arkanelinux.org/$repo/os/$arch
++
++[arkane]
++Server = https://repo.arkanelinux.org/$repo/os/$arch
++
+ #[testing]
+ #Include = /etc/pacman.d/mirrorlist
+ 
